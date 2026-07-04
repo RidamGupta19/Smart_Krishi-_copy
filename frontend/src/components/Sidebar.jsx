@@ -1,54 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import {
-  Home,
-  CloudSun,
-  CloudSunRain,
-  ShieldAlert,
-  History,
-  Leaf,
-  Wheat,
-  Milk,
-  Boxes,
-  Tractor,
-  Hammer,
-  MapPin,
-  LayoutDashboard,
-  ShoppingBag,
-  ShoppingCart,
-  FileText,
-  Heart,
-  Bell,
-  Briefcase,
-  Building,
-  PlusCircle,
-  Layers,
-  FileCheck,
-  IndianRupee,
-  BarChart4,
-  TrendingUp,
-  LineChart,
-  User,
-  UserCircle,
-  CreditCard,
-  Settings,
-  HelpCircle,
-  LifeBuoy,
-  Mail,
-  FileQuestion,
-  ChevronLeft,
-  ChevronRight,
-  Menu,
-  Users,
-  ShieldCheck,
-  MessageSquare,
-  X
+  Home, ShoppingBasket, Package, ShoppingCart, Sprout, CloudSun,
+  ShieldCheck, MapPin, Wrench, Tractor, Milk, Building2, Hammer,
+  Bell, User, Settings, Headphones, UserCircle, CreditCard, HelpCircle,
+  LifeBuoy, Mail, FileQuestion, Users, ShieldAlert, MessageSquare, BarChart4,
+  PlusCircle, Layers, Boxes, FileCheck, IndianRupee, FileText, Heart, ChevronLeft, Menu, X, Wheat
 } from "lucide-react";
 
-export default function Sidebar({ isOpen, toggleSidebar, isCollapsed, setCollapsed, sidebarWidth, setSidebarWidth, isResizing, setIsResizing }) {
+export default function Sidebar({
+  isOpen,
+  toggleSidebar,
+  isCollapsed,
+  setCollapsed,
+  sidebarWidth,
+  setSidebarWidth,
+  isResizing,
+  setIsResizing
+}) {
   const location = useLocation();
-  const [expandedSection, setExpandedSection] = useState(null);
   const [user, setUser] = useState(null);
 
   // Esc key keyboard listener to close mobile menu
@@ -117,361 +87,108 @@ export default function Sidebar({ isOpen, toggleSidebar, isCollapsed, setCollaps
   const isAdmin = user && (user.roles?.includes("ADMIN") || user.roles?.includes("ROLE_ADMIN") || user.roles?.includes("SUPER_ADMIN"));
   const isSeller = user && (user.roles?.includes("SELLER") || user.roles?.includes("ROLE_SELLER"));
 
-  // Theme Category Colors mapping
-  const categoryColors = {
-    agriculture: {
-      text: "text-emerald-400",
-      bg: "bg-emerald-950/60",
-      border: "border-brand-green-mid",
-      hover: "hover:bg-emerald-900/30 hover:text-emerald-300"
-    },
-    weather: {
-      text: "text-sky-400",
-      bg: "bg-sky-950/60",
-      border: "border-sky-blue",
-      hover: "hover:bg-sky-900/30 hover:text-sky-300"
-    },
-    orders: {
-      text: "text-orange-400",
-      bg: "bg-orange-950/60",
-      border: "border-orange-500",
-      hover: "hover:bg-orange-900/30 hover:text-orange-300"
-    },
-    earnings: {
-      text: "text-wheat-gold",
-      bg: "bg-wheat-gold/15",
-      border: "border-wheat-gold",
-      hover: "hover:bg-wheat-gold/10 hover:text-wheat-gold"
-    },
-    default: {
-      text: "text-green-400",
-      bg: "bg-green-900/40",
-      border: "border-brand-green-light",
-      hover: "hover:bg-green-900/20 hover:text-green-300"
-    }
-  };
-
-  const navSchema = [];
+  const navItems = [];
+  const footerItems = [];
 
   if (isAdmin) {
-    navSchema.push(
-      {
-        title: "Admin Dashboard",
-        type: "link",
-        path: "/admin/dashboard",
-        icon: LayoutDashboard,
-        color: "default"
-      },
-      {
-        title: "User Management",
-        type: "link",
-        path: "/admin/users",
-        icon: Users,
-        color: "default"
-      },
-      {
-        title: "Seller Verification",
-        type: "link",
-        path: "/admin/verification",
-        icon: ShieldCheck,
-        color: "default"
-      },
-      {
-        title: "Product Moderation",
-        type: "link",
-        path: "/admin/moderation",
-        icon: Leaf,
-        color: "default"
-      },
-      {
-        title: "Revenue Analytics",
-        type: "link",
-        path: "/admin/revenue",
-        icon: IndianRupee,
-        color: "default"
-      },
-      {
-        title: "Platform Analytics",
-        type: "link",
-        path: "/admin/platform-analytics",
-        icon: BarChart4,
-        color: "default"
-      },
-      {
-        title: "Order Management",
-        type: "link",
-        path: "/admin/orders",
-        icon: FileText,
-        color: "default"
-      },
-      {
-        title: "Fraud Monitoring",
-        type: "link",
-        path: "/admin/fraud",
-        icon: ShieldAlert,
-        color: "default"
-      },
-      {
-        title: "System Settings",
-        type: "link",
-        path: "/admin/settings",
-        icon: Settings,
-        color: "default"
-      },
-      {
-        title: "User Feedback",
-        type: "link",
-        path: "/admin/feedback",
-        icon: MessageSquare,
-        color: "default"
-      },
-      {
-        title: "Account",
-        type: "accordion",
-        id: "account",
-        icon: User,
-        color: "default",
-        subItems: [
-          { title: "Profile", path: "/account", icon: UserCircle },
-          { title: "Settings", path: "/account/settings", icon: Settings }
-        ]
-      }
+    navItems.push(
+      { label: "Admin Dashboard", path: "/admin/dashboard", icon: Home },
+      { label: "User Management", path: "/admin/users", icon: Users },
+      { label: "Seller Verification", path: "/admin/verification", icon: ShieldCheck },
+      { label: "Product Moderation", path: "/admin/moderation", icon: Sprout },
+      { label: "Revenue Analytics", path: "/admin/revenue", icon: IndianRupee },
+      { label: "Platform Analytics", path: "/admin/platform-analytics", icon: BarChart4 },
+      { label: "Order Management", path: "/admin/orders", icon: FileText },
+      { label: "Fraud Monitoring", path: "/admin/fraud", icon: ShieldAlert },
+      { label: "System Settings", path: "/admin/settings", icon: Settings },
+      { label: "User Feedback", path: "/admin/feedback", icon: MessageSquare }
     );
   } else {
-    // Buyer / Seller view
-    navSchema.push(
-      {
-        title: "Marketplace Hub",
-        type: "link",
-        path: "/",
-        icon: Home,
-        color: "default"
-      },
-      {
-        title: "System Dashboard",
-        type: "link",
-        path: "/dashboard",
-        icon: BarChart4,
-        color: "default"
-      },
-      {
-        title: "Weather Intelligence",
-        type: "accordion",
-        id: "weather",
-        icon: CloudSun,
-        color: "weather",
-        subItems: [
-          { title: "Current Weather", path: "/weather", icon: CloudSun },
-          { title: "Forecast", path: "/weather/forecast", icon: CloudSunRain },
-          { title: "Farmer Advisories", path: "/weather/advisories", icon: ShieldAlert }
-        ]
-      },
-      {
-        title: "Agriculture Marketplace",
-        type: "accordion",
-        id: "marketplace",
-        icon: Leaf,
-        color: "agriculture",
-        subItems: [
-          { title: "Crops Marketplace", path: "/farming-crop", icon: Wheat },
-          { title: "Milk Marketplace", path: "/milk", icon: Milk },
-          { title: "Fertilizer Marketplace", path: "/fertilizers", icon: Boxes },
-          { title: "Machinery Marketplace", path: "/machinery", icon: Tractor },
-          { title: "Machinery Rentals", path: "/machinery-rental", icon: Tractor },
-          { title: "Building Materials", path: "/building-materials", icon: Hammer },
-          { title: "Land Marketplace", path: "/landselling", icon: MapPin }
-        ]
-      },
-      {
-        title: "Buyer Center",
-        type: "accordion",
-        id: "buyer",
-        icon: ShoppingBag,
-        color: "orders",
-        subItems: [
-          { title: "My Cart", path: "/cart", icon: ShoppingCart },
-          { title: "My Orders", path: "/account/orders", icon: FileText },
-          { title: "Wishlist", path: "/account/wishlist", icon: Heart },
-          { title: "Notifications", path: "/account/notifications", icon: Bell },
-          { title: "Nearby Listings", path: "/nearby-products", icon: MapPin }
-        ]
-      }
+    // Standard / Seller View
+    navItems.push(
+      { label: "Home", path: "/", icon: Home },
+      { label: "Dashboard", path: "/dashboard", icon: BarChart4 },
+      { label: "Weather Forecast", path: "/weather", icon: CloudSun },
+      { label: "Farmer Advisories", path: "/weather/advisories", icon: ShieldAlert },
+      { label: "Crops Marketplace", path: "/farming-crop", icon: Wheat },
+      { label: "Milk Marketplace", path: "/milk", icon: Milk },
+      { label: "Fertilizer Marketplace", path: "/fertilizers", icon: Boxes },
+      { label: "Machinery Marketplace", path: "/machinery", icon: Tractor },
+      { label: "Machinery Rentals", path: "/machinery-rental", icon: Tractor },
+      { label: "Building Materials", path: "/building-materials", icon: Hammer },
+      { label: "Land Marketplace", path: "/landselling", icon: MapPin },
+      { label: "My Cart", path: "/cart", icon: ShoppingCart },
+      { label: "My Orders", path: "/account/orders", icon: FileText },
+      { label: "Wishlist", path: "/account/wishlist", icon: Heart },
+      { label: "Nearby Listings", path: "/nearby-products", icon: MapPin }
     );
 
     if (isSeller) {
-      navSchema.push({
-        title: "Seller Center",
-        type: "accordion",
-        id: "seller",
-        icon: Briefcase,
-        color: "earnings",
-        subItems: [
-          { title: "My Shop", path: "/account/seller-application/shop", icon: Building },
-          { title: "Add Product", path: "/account/seller-application/add-product", icon: PlusCircle },
-          { title: "My Listings", path: "/account/seller-application/listings", icon: Layers },
-          { title: "Inventory", path: "/account/seller-application/inventory", icon: Boxes },
-          { title: "Orders Received", path: "/account/seller-application/orders", icon: FileCheck },
-          { title: "Earnings", path: "/account/seller-application/earnings", icon: IndianRupee },
-          { title: "Analytics", path: "/account/seller-application/analytics", icon: BarChart4 },
-          { title: "Shop Location Setup", path: "/seller/location-setup", icon: MapPin }
-        ]
-      });
+      navItems.push(
+        { label: "My Shop", path: "/account/seller-application/shop", icon: Building2 },
+        { label: "Add Product", path: "/account/seller-application/add-product", icon: PlusCircle },
+        { label: "My Listings", path: "/account/seller-application/listings", icon: Layers },
+        { label: "Inventory", path: "/account/seller-application/inventory", icon: Boxes },
+        { label: "Orders Received", path: "/account/seller-application/orders", icon: FileCheck },
+        { label: "Earnings", path: "/account/seller-application/earnings", icon: IndianRupee },
+        { label: "Analytics", path: "/account/seller-application/analytics", icon: BarChart4 },
+        { label: "Shop Location Setup", path: "/seller/location-setup", icon: MapPin }
+      );
     }
-
-    navSchema.push(
-      {
-        title: "Account",
-        type: "accordion",
-        id: "account",
-        icon: User,
-        color: "default",
-        subItems: [
-          { title: "Profile", path: "/account/profile", icon: UserCircle },
-          { title: "Address Book", path: "/account/addresses", icon: MapPin },
-          { title: "Payment Methods", path: "/account/payments", icon: CreditCard },
-          { title: "Settings", path: "/account/settings", icon: Settings }
-        ]
-      },
-      {
-        title: "Support",
-        type: "accordion",
-        id: "support",
-        icon: HelpCircle,
-        color: "default",
-        subItems: [
-          { title: "Help Center", path: "/support/help", icon: LifeBuoy },
-          { title: "Contact Support", path: "/support/contact", icon: Mail },
-          { title: "FAQ", path: "/support/faq", icon: FileQuestion }
-        ]
-      }
-    );
   }
 
-  const handleAccordionClick = (id) => {
-    if (isCollapsed) {
-      setCollapsed(false);
-      setExpandedSection(id);
-    } else {
-      setExpandedSection(expandedSection === id ? null : id);
-    }
-  };
+  // Footer items
+  footerItems.push(
+    { label: "Notifications", path: "/account/notifications", icon: Bell, badge: 5 },
+    { label: "My Profile", path: "/account/profile", icon: User },
+    { label: "Settings", path: "/account/settings", icon: Settings },
+    { label: "Help & Support", path: "/support/help", icon: HelpCircle }
+  );
 
-  const isItemActive = (path) => location.pathname === path;
-  const isSectionActive = (subItems) => subItems.some(item => location.pathname === item.path);
-
-  // Render navigation item element
   const renderItem = (item) => {
     const Icon = item.icon;
-    const colors = categoryColors[item.color] || categoryColors.default;
+    const active = location.pathname === item.path;
 
-    if (item.type === "link") {
-      const active = isItemActive(item.path);
-      return (
-        <Link
-          key={item.path}
-          to={item.path}
-          className={`flex items-center gap-3.5 px-4 py-3 rounded-xl font-bold transition-all duration-200 border-l-4 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-green-950 ${
-            active
-              ? `${colors.text} ${colors.bg} ${colors.border}`
-              : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
-          }`}
-          onClick={() => isOpen && toggleSidebar()}
-          title={isCollapsed && !isOpen ? item.title : ""}
-          aria-label={item.title}
-        >
-          <Icon size={20} className={active ? colors.text : "text-gray-400"} aria-hidden="true" />
-          <span className={`text-sm tracking-wide ${isCollapsed && !isOpen ? "sr-only" : ""}`}>{item.title}</span>
-        </Link>
-      );
-    }
-
-    if (item.type === "accordion") {
-      const open = expandedSection === item.id;
-      const active = isSectionActive(item.subItems);
-
-      return (
-        <div key={item.id} className="space-y-1">
-          <button
-            onClick={() => handleAccordionClick(item.id)}
-            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl font-bold transition-all duration-200 border-l-4 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-green-950 ${
-              active
-                ? `${colors.text} ${colors.bg} ${colors.border}`
-                : "border-transparent text-gray-400 hover:text-white hover:bg-white/5"
-            }`}
-            title={isCollapsed && !isOpen ? item.title : ""}
-            aria-expanded={open}
-            aria-controls={`subitems-${item.id}`}
-            aria-label={item.title}
-          >
-            <div className="flex items-center gap-3.5">
-              <Icon size={20} className={active || open ? colors.text : "text-gray-400"} aria-hidden="true" />
-              <span className={`text-sm tracking-wide ${isCollapsed && !isOpen ? "sr-only" : ""}`}>{item.title}</span>
-            </div>
-            {!isCollapsed && (
-              <ChevronLeft
-                size={16}
-                className={`transition-transform duration-250 ${open ? "-rotate-90 text-white" : "text-gray-500"}`}
-                aria-hidden="true"
-              />
-            )}
-          </button>
-
-          <AnimatePresence initial={false}>
-            {open && !isCollapsed && (
-              <motion.div
-                id={`subitems-${item.id}`}
-                role="region"
-                aria-label={`${item.title} sub menu`}
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeInOut" }}
-                className="overflow-hidden pl-7 space-y-1 pr-1"
-              >
-                {item.subItems.map((sub) => {
-                  const SubIcon = sub.icon;
-                  const subActive = isItemActive(sub.path);
-                  return (
-                    <Link
-                      key={sub.path}
-                      to={sub.path}
-                      className={`flex items-center justify-between px-4 py-2.5 rounded-lg text-xs font-semibold transition-all duration-150 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
-                        subActive
-                          ? `${colors.text} bg-white/5`
-                          : "text-gray-400 hover:text-white hover:bg-white/5"
-                      }`}
-                      onClick={() => isOpen && toggleSidebar()}
-                      aria-label={sub.title}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <SubIcon size={14} className={subActive ? colors.text : "text-gray-500"} aria-hidden="true" />
-                        <span>{sub.title}</span>
-                      </div>
-                      {sub.badge && (
-                        <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-black ${
-                          item.color === "orders" ? "bg-orange-500 text-white" :
-                          item.color === "earnings" ? "bg-amber-500 text-black" :
-                          "bg-green-600 text-white"
-                        }`}>
-                          {sub.badge}
-                        </span>
-                      )}
-                    </Link>
-                  );
-                })}
-              </motion.div>
-            )}
-          </AnimatePresence>
+    return (
+      <Link
+        key={item.path}
+        to={item.path}
+        className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-medium transition cursor-pointer relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+          active
+            ? "bg-amber-500 text-ink-900 shadow-soft"
+            : "text-ink-500 hover:bg-cream-200/70 hover:text-ink-900"
+        }`}
+        onClick={() => isOpen && toggleSidebar()}
+        title={isCollapsed && !isOpen ? item.label : ""}
+        aria-label={item.label}
+      >
+        <div className="relative shrink-0 flex items-center justify-center">
+          <Icon size={18} strokeWidth={2} />
+          {item.badge && (isCollapsed && !isOpen) && (
+            <span className="absolute -top-1.5 -right-1.5 h-3.5 w-3.5 rounded-full bg-leaf-600 border border-cream-100 flex items-center justify-center text-[8px] font-bold text-white">
+              {item.badge}
+            </span>
+          )}
         </div>
-      );
-    }
+        
+        {(!isCollapsed || isOpen) && (
+          <span className="flex-1 text-left font-heading text-sm whitespace-nowrap overflow-hidden text-ellipsis">
+            {item.label}
+          </span>
+        )}
 
-    return null;
+        {item.badge && (!isCollapsed || isOpen) && (
+          <span className="grid place-items-center h-5 w-5 rounded-full bg-leaf-600 text-white text-[11px] font-semibold">
+            {item.badge}
+          </span>
+        )}
+      </Link>
+    );
   };
 
   return (
     <>
-      {/* Mobile Sidebar overlay background backdrop */}
+      {/* Mobile Sidebar overlay backdrop */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 lg:hidden"
@@ -487,7 +204,7 @@ export default function Sidebar({ isOpen, toggleSidebar, isCollapsed, setCollaps
         style={{
           width: isOpen ? "288px" : (isCollapsed ? "80px" : `${sidebarWidth}px`)
         }}
-        className={`fixed top-0 bottom-0 left-0 bg-gradient-to-b from-green-950 via-[#052e16] to-[#021c0d] border-r border-green-900/35 text-white flex flex-col z-50 shadow-2xl ${
+        className={`fixed top-0 bottom-0 left-0 bg-cream-100 border-r border-cream-200 text-ink-900 flex flex-col z-50 shadow-soft ${
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         } ${isResizing ? "" : "transition-[width,transform] duration-300"}`}
       >
@@ -502,37 +219,40 @@ export default function Sidebar({ isOpen, toggleSidebar, isCollapsed, setCollaps
             aria-valuemin={240}
             aria-valuemax={380}
             aria-label="Sidebar resize handle"
-            className="hidden lg:block absolute top-0 right-0 bottom-0 w-2 cursor-col-resize hover:bg-emerald-500/50 active:bg-emerald-600 focus-visible:bg-emerald-500/70 focus-visible:outline-none transition-colors z-50"
+            className="hidden lg:block absolute top-0 right-0 bottom-0 w-2 cursor-col-resize hover:bg-amber-500/50 active:bg-amber-600 focus-visible:bg-amber-500/70 focus-visible:outline-none transition-colors z-50 border-r border-cream-200"
           />
         )}
 
         {/* Brand logo header */}
         <div 
-          className={`h-16 flex items-center justify-between border-b border-green-900/20 ${isCollapsed ? "px-4 justify-center" : "px-6"}`}
+          className={`h-16 flex items-center justify-between border-b border-cream-200 ${isCollapsed ? "px-4 justify-center" : "px-6"}`}
           onClick={() => isCollapsed && setCollapsed(false)}
           style={{ cursor: isCollapsed ? "pointer" : "default" }}
         >
           <Link to="/" className="flex items-center gap-2.5 overflow-hidden">
-            <Leaf className="text-emerald-500 flex-shrink-0" size={26} />
+            <div className="h-9 w-9 rounded-full bg-white grid place-items-center shadow-soft flex-shrink-0">
+              <Sprout className="text-leaf-600" size={18} />
+            </div>
             {(!isCollapsed || isOpen) && (
-              <motion.span
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="font-black text-lg tracking-wider bg-gradient-to-r from-white via-green-100 to-emerald-400 bg-clip-text text-transparent"
-              >
-                Smart Krishi
-              </motion.span>
+              <div className="flex flex-col">
+                <span className="font-heading font-bold text-sm tracking-wider text-ink-900 leading-tight">
+                  Smart Krishi
+                </span>
+                <span className="text-[9px] text-leaf-600 leading-tight font-semibold">
+                  समृद्ध किसान, समृद्ध देश
+                </span>
+              </div>
             )}
           </Link>
 
-          {/* Desktop header toggle button next to logo */}
+          {/* Desktop header toggle button */}
           {(!isCollapsed || isOpen) && (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setCollapsed(true);
               }}
-              className="hidden lg:flex w-8 h-8 bg-white/10 hover:bg-white/20 text-white rounded-full items-center justify-center cursor-pointer transition shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="hidden lg:flex w-8 h-8 bg-cream-200/50 hover:bg-cream-200 text-ink-900 rounded-full items-center justify-center cursor-pointer transition shadow-soft outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
               title="Collapse Sidebar"
               aria-label="Collapse Sidebar"
             >
@@ -541,7 +261,7 @@ export default function Sidebar({ isOpen, toggleSidebar, isCollapsed, setCollaps
           )}
 
           <button
-            className="lg:hidden text-gray-400 hover:text-white outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            className="lg:hidden text-ink-500 hover:text-ink-900 outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
             onClick={toggleSidebar}
             aria-label="Close Sidebar Drawer"
           >
@@ -550,35 +270,41 @@ export default function Sidebar({ isOpen, toggleSidebar, isCollapsed, setCollaps
         </div>
 
         {/* Scrollable list items navigation content */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 scrollbar-thin scrollbar-thumb-white/5">
-          {navSchema.map((item) => renderItem(item))}
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5 scrollbar-thin scrollbar-thumb-cream-200">
+          {navItems.map((item) => renderItem(item))}
         </nav>
 
         {/* Sidebar Settings Collapse Toggle at bottom */}
-        <div className="p-4 border-t border-green-900/25 space-y-2">
-          {(!isCollapsed || isOpen) && (
-            <span className="text-[9px] uppercase tracking-widest text-gray-500 font-black block px-2" aria-hidden="true">
-              Sidebar Settings
-            </span>
-          )}
-          <button
-            onClick={() => setCollapsed(!isCollapsed)}
-            className={`w-full flex items-center justify-between p-2.5 hover:bg-white/5 rounded-xl transition text-left text-gray-400 hover:text-white font-bold text-xs outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-green-950 ${
-              isCollapsed ? "justify-center" : "px-2"
-            }`}
-            aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-            aria-expanded={!isCollapsed}
-          >
-            <div className="flex items-center gap-3">
-              <Menu size={16} aria-hidden="true" />
-              {(!isCollapsed || isOpen) && <span>Collapse Sidebar</span>}
-            </div>
+        <div className="p-4 border-t border-cream-200 space-y-2 mt-auto">
+          <div className="flex flex-col gap-1.5">
+            {footerItems.map((item) => renderItem(item))}
+          </div>
+
+          <div className="pt-2 border-t border-cream-200/60">
             {(!isCollapsed || isOpen) && (
-              <div className="p-1 bg-white/5 rounded-lg text-gray-400 hover:bg-white/10 transition" aria-hidden="true">
-                <ChevronLeft size={14} className={`transform transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
-              </div>
+              <span className="text-[9px] uppercase tracking-widest text-ink-500 font-bold block px-2 mb-1" aria-hidden="true">
+                Sidebar Settings
+              </span>
             )}
-          </button>
+            <button
+              onClick={() => setCollapsed(!isCollapsed)}
+              className={`w-full flex items-center justify-between p-2.5 hover:bg-cream-200/50 rounded-xl transition text-left text-ink-500 hover:text-ink-900 font-bold text-xs outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                isCollapsed ? "justify-center" : "px-2"
+              } cursor-pointer`}
+              aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+              aria-expanded={!isCollapsed}
+            >
+              <div className="flex items-center gap-3">
+                <Menu size={16} aria-hidden="true" />
+                {(!isCollapsed || isOpen) && <span>Collapse Sidebar</span>}
+              </div>
+              {(!isCollapsed || isOpen) && (
+                <div className="p-1 bg-cream-200/30 rounded-lg text-ink-500 hover:bg-cream-200/60 transition" aria-hidden="true">
+                  <ChevronLeft size={14} className={`transform transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
+                </div>
+              )}
+            </button>
+          </div>
         </div>
       </aside>
     </>

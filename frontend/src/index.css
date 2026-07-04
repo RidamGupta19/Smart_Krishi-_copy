@@ -1,8 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Outfit', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-heading: 'Poppins', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  /* Cream Theme Design Tokens */
+  --color-cream-50: #FDF8ED;
+  --color-cream-100: #FBEFD9;
+  --color-cream-200: #F3E3BE;
+  --color-amber-500: #F0A63A;
+  --color-amber-600: #D9821B;
+  --color-leaf-600: #2E7D32;
+  --color-ink-900: #2B2418;
+  --color-ink-500: #7A6E58;
+  --color-card-white: #FFFFFF;
+  --color-mint-100: #DCF2E3;
+  --color-peach-100: #FDEBD3;
+  --color-sky-100: #DCEAFB;
+  --color-lilac-100: #EDE3FB;
+
+  --radius-2xl: 16px;
+  --radius-3xl: 24px;
+
+  --shadow-soft: 0 2px 10px rgba(43, 36, 24, 0.06);
+  --shadow-softmd: 0 6px 20px rgba(43, 36, 24, 0.10);
   
   /* Brand Theme Colors (Direct overrides to propagate changes application-wide) */
   --color-green-600: #388E3C;
@@ -51,13 +74,13 @@
 
 /* Base enhancements for farmer accessibility */
 html {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: #FAF9F6;
-  color: #1c2b1e;
+  background-color: #FDF8ED;
+  color: #2B2418;
   -webkit-font-smoothing: antialiased;
 }
 
