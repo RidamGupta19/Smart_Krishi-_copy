@@ -64,6 +64,20 @@ spring:
       expiration: 86400000 # 24 hours
       refresh-expiration: 604800000 # 7 days
 
+  # Email Configuration
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:your-email@gmail.com}
+    password: ${MAIL_PASSWORD:your-password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
 # Server Configuration
 server:
   port: 8080
@@ -128,17 +142,7 @@ google:
   maps:
     api-key: ${GOOGLE_MAPS_API_KEY:}
 
-# Email Configuration
-mail:
-  smtp:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:your-email@gmail.com}
-    password: ${MAIL_PASSWORD:your-password}
-    auth: true
-    starttls:
-      enable: true
-      required: true
+
 
 # SpringDoc OpenAPI Configuration
 springdoc:

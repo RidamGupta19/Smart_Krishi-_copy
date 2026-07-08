@@ -22,15 +22,21 @@ public class DatabaseConfig {
     @Value("${spring.datasource.password:}")
     private String defaultPassword;
 
+    @Value("${spring.profiles.active:local}")
+    private String activeProfile;
+
     @Value("${spring.datasource.driver-class-name:com.mysql.cj.jdbc.Driver}")
     private String defaultDriver;
 
     @Bean
     @Primary
     public DataSource dataSource() {
-        String dbUrl = System.getenv("DATABASE_URL");
-        if (dbUrl == null) {
-            dbUrl = System.getProperty("DATABASE_URL");
+        String dbUrl = null;
+        if (!"local".equals(activeProfile)) {
+            dbUrl = System.getenv("DATABASE_URL");
+            if (dbUrl == null) {
+                dbUrl = System.getProperty("DATABASE_URL");
+            }
         }
         if (dbUrl != null && (dbUrl.startsWith("mysql://") || dbUrl.startsWith("postgres://"))) {
             try {
