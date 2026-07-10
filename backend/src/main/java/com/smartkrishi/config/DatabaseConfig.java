@@ -49,26 +49,27 @@ public class DatabaseConfig {
                     username = userParts[0];
                     password = userParts[1];
                 }
-                
+
                 String dbType = dbUri.getScheme();
                 String host = dbUri.getHost();
                 int port = dbUri.getPort();
                 String path = dbUri.getPath();
-                
+
                 if (port == -1) {
                     port = dbType.equals("mysql") ? 3306 : 5432;
                 }
-                
+
                 String jdbcUrl;
                 String driverClassName;
                 if (dbType.equals("mysql")) {
-                    jdbcUrl = "jdbc:mysql://" + host + ":" + port + path + "?useSSL=true&requireSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true";
+                    jdbcUrl = "jdbc:mysql://" + host + ":" + port + path
+                            + "?useSSL=true&requireSSL=true&serverTimezone=UTC&allowPublicKeyRetrieval=true";
                     driverClassName = "com.mysql.cj.jdbc.Driver";
                 } else {
                     jdbcUrl = "jdbc:postgresql://" + host + ":" + port + path + "?sslmode=require";
                     driverClassName = "org.postgresql.Driver";
                 }
-                
+
                 return DataSourceBuilder.create()
                         .url(jdbcUrl)
                         .username(username)
@@ -79,7 +80,7 @@ public class DatabaseConfig {
                 // fall back to default properties on parsing error
             }
         }
-        
+
         return DataSourceBuilder.create()
                 .url(defaultUrl)
                 .username(defaultUsername)

@@ -18,6 +18,14 @@ public class SmartKrishiApplication {
 
     public static void main(String[] args) {
         loadDotEnv();
+        String profile = System.getProperty("SPRING_PROFILES_ACTIVE");
+        if (profile == null) {
+            profile = System.getenv("SPRING_PROFILES_ACTIVE");
+        }
+        if (profile == null || "local".equals(profile)) {
+            System.setProperty("spring.jpa.hibernate.ddl-auto", "update");
+            System.out.println("[SmartKrishiApplication] Local profile active: set spring.jpa.hibernate.ddl-auto to update");
+        }
         SpringApplication.run(SmartKrishiApplication.class, args);
     }
 
@@ -28,6 +36,7 @@ public class SmartKrishiApplication {
                 envFile = new java.io.File("../.env");
             }
             if (envFile.exists()) {
+                System.out.println("[DOTENV] Loading env file from: " + envFile.getAbsolutePath());
                 java.nio.file.Files.lines(envFile.toPath()).forEach(line -> {
                     String trimmed = line.trim();
                     if (!trimmed.isEmpty() && !trimmed.startsWith("#") && trimmed.contains("=")) {
@@ -40,11 +49,23 @@ public class SmartKrishiApplication {
                         } else if (value.startsWith("'") && value.endsWith("'")) {
                             value = value.substring(1, value.length() - 1);
                         }
+                        
+                        // Ignore offline Aiven cloud database configurations
+                        if (value.contains("aivencloud.com")) {
+                            System.out.println("[DOTENV] Ignoring offline Aiven cloud database setting: " + key);
+                            return;
+                        }
+
                         if (System.getProperty(key) == null && System.getenv(key) == null) {
                             System.setProperty(key, value);
+                            System.out.println("[DOTENV] Set property: " + key + "=" + (key.contains("PASSWORD") || key.contains("SECRET") ? "******" : value));
+                        } else {
+                            System.out.println("[DOTENV] Skipped property (already exists): " + key);
                         }
                     }
                 });
+            } else {
+                System.out.println("[DOTENV] No .env or ../.env file found!");
             }
         } catch (Exception e) {
             System.err.println("Failed to load .env file: " + e.getMessage());

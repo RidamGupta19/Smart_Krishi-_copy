@@ -78,7 +78,7 @@ export default function Account() {
     if (window.google && !user && !isOtpVerification) {
       try {
         window.google.accounts.id.initialize({
-          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "902721223221-fs506u6r4j5b315v1fp3r72b50b0b2r7.apps.googleusercontent.com",
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "902721223221-q5i46gi0vco3e3lfn3f2it0nps2qio5r.apps.googleusercontent.com",
           callback: handleGoogleLoginCallback,
         });
 
@@ -113,7 +113,7 @@ export default function Account() {
       setToken(accessToken);
       setUser(userData);
       setSuccessMessage(`Welcome, ${userData.firstName}! 🎉`);
-      
+
       window.dispatchEvent(new Event("storage"));
       navigate("/account/profile");
     } catch (err) {
@@ -181,7 +181,7 @@ export default function Account() {
         setToken(accessToken);
         setUser(userData);
         setSuccessMessage(`Welcome back, ${userData.firstName}! 🎉`);
-        
+
         window.dispatchEvent(new Event("storage"));
         navigate("/account/profile");
       } else {
@@ -238,7 +238,7 @@ export default function Account() {
       await api.post("/auth/verify-otp", { email: otpEmail, otpCode });
       setVerificationSuccess(true);
       setSuccessMessage("Verification successful! Please log in.");
-      
+
       // Auto transition to login screen after 2.5s
       setTimeout(() => {
         setIsOtpVerification(false);
@@ -306,11 +306,10 @@ export default function Account() {
             <div className="space-y-2 lg:col-span-1">
               <Link
                 to="/account/profile"
-                className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${
-                  isProfileActive
-                    ? "bg-green-600 text-white shadow-lg shadow-green-100"
-                    : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
-                }`}
+                className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${isProfileActive
+                  ? "bg-green-600 text-white shadow-lg shadow-green-100"
+                  : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
+                  }`}
               >
                 <span className="flex items-center gap-3">
                   <User size={20} />
@@ -322,11 +321,10 @@ export default function Account() {
               {!isUserAdmin && (
                 <Link
                   to="/account/seller-application"
-                  className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${
-                    isSellerActive
-                      ? "bg-green-600 text-white shadow-lg shadow-green-100"
-                      : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
-                  }`}
+                  className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${isSellerActive
+                    ? "bg-green-600 text-white shadow-lg shadow-green-100"
+                    : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
+                    }`}
                 >
                   <span className="flex items-center gap-3">
                     <Briefcase size={20} />
@@ -364,11 +362,10 @@ export default function Account() {
 
               <Link
                 to="/account/orders"
-                className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${
-                  isOrdersActive
-                    ? "bg-green-600 text-white shadow-lg shadow-green-100"
-                    : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
-                }`}
+                className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${isOrdersActive
+                  ? "bg-green-600 text-white shadow-lg shadow-green-100"
+                  : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
+                  }`}
               >
                 <span className="flex items-center gap-3">
                   <FileText size={20} />
@@ -379,11 +376,10 @@ export default function Account() {
 
               <Link
                 to="/account/rentals"
-                className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${
-                  isRentalsActive
-                    ? "bg-green-600 text-white shadow-lg shadow-green-100"
-                    : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
-                }`}
+                className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${isRentalsActive
+                  ? "bg-green-600 text-white shadow-lg shadow-green-100"
+                  : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
+                  }`}
               >
                 <span className="flex items-center gap-3">
                   <Calendar size={20} />
@@ -394,11 +390,10 @@ export default function Account() {
 
               <Link
                 to="/account/reviews"
-                className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${
-                  isReviewsActive
-                    ? "bg-green-600 text-white shadow-lg shadow-green-100"
-                    : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
-                }`}
+                className={`w-full text-left px-5 py-4 rounded-2xl font-bold flex items-center justify-between transition ${isReviewsActive
+                  ? "bg-green-600 text-white shadow-lg shadow-green-100"
+                  : "bg-white hover:bg-gray-50 text-gray-700 border border-gray-100"
+                  }`}
               >
                 <span className="flex items-center gap-3">
                   <MessageCircle size={20} />
@@ -438,10 +433,10 @@ export default function Account() {
               <div className="w-16 h-16 bg-green-50 text-green-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                 <KeyRound size={32} />
               </div>
-              
+
               <h2 className="text-3xl font-extrabold text-green-950 mb-2">Enter Verification Code</h2>
               <p className="text-gray-500 text-xs leading-relaxed mb-6">
-                We've sent a 6-digit OTP code to <strong className="text-gray-700">{otpEmail}</strong>.<br/>
+                We've sent a 6-digit OTP code to <strong className="text-gray-700">{otpEmail}</strong>.<br />
                 Please enter it below to activate your account.
               </p>
 
@@ -489,7 +484,7 @@ export default function Account() {
                     <span>Didn't receive the email?</span>
                   )}
                 </div>
-                
+
                 <button
                   type="button"
                   onClick={handleResendOtp}
@@ -556,14 +551,14 @@ export default function Account() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex gap-3 mt-3">
                   <label className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 px-3.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition flex items-center gap-1 shadow-sm">
                     <Upload size={13} />
                     {profileImage ? "Change Photo" : "Upload Photo"}
                     <input type="file" accept="image/*" className="hidden" onChange={handleProfileImageUpload} disabled={uploadingImage} />
                   </label>
-                  
+
                   {profileImage && (
                     <button
                       type="button"
