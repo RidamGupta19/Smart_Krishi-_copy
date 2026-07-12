@@ -6,8 +6,8 @@ spring:
   
   # Database Configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/smart_krishi?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-    username: root
+    url: ${DB_URL:jdbc:mysql://localhost:3306/smart_krishi?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true}
+    username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:NewPassword@123}
     hikari:
       maximum-pool-size: 20
@@ -23,7 +23,6 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
         use_sql_comments: true
         jdbc:
@@ -33,7 +32,6 @@ spring:
         order_updates: true
     show-sql: false
     open-in-view: false
-    database-platform: org.hibernate.dialect.MySQL8Dialect
   
   # Flyway Configuration
   flyway:
@@ -60,9 +58,23 @@ spring:
   # Security
   security:
     jwt:
-      secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      secret: ${JWT_SECRET:93adb6b6c8ef0c6e58ab4b8882670608c33abc8a57c36194f483e75f25055e22ad6dc1a76d780832584461d5cb356db9b389c39ee2de67e096a31b448b61df3ddc904e93b4a25df27590e3e121f198764aa38e4f61d3f645b940fe4f34cab29df7b10784b1cfdff2d84ab3b675c612416f8f1f15bc3111e014d385a36948af57f3b7ae78343c7fbcae4657230220e971c43902423840268d536c43525d23c4f3af457fd6a4dfcca33caef5bb98b2b80d199bed5e57d5ee016aa13b7f051d1a255a4eff5bfc367819ad67aee54f2eb9f12e61ed66e1cb9baaabbfffd3da88b05feed06248cddf05693b4ae59e44b9604e738682b022b676ac30e58369d1b0c445ce00d8155ca19db1aabfefc033372f1efb587e6aa6ba01c4a93f4fc9c049dbcf4907fbd5605d3a4e4d171bad4af121a6570427907cef96173dcf3ff4664998fd781aa7e542b552a638a29aa4439a1bd6f56a13e5494fad2a2701b449abe64d209a1218574999b05451dcdae9b6938b1b69792208bbfb8f910b1ee5b7c1890319b6d59e83bc9e843480d8300df0cc5137c2422d7554561dcfde2b9fa3c6c4110d2e747e503c8b66ff124dece3b580d6faf7223f7491d7b9ecadfa782e35e43de0807fc7279b89cdf351739d39aec01ede63d438f6a0503d46e4ee5d5885bdd486bc0ed394f3c1d2aa}
       expiration: 86400000 # 24 hours
       refresh-expiration: 604800000 # 7 days
+
+  # Email Configuration
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:your-email@gmail.com}
+    password: ${MAIL_PASSWORD:your-password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 # Server Configuration
 server:
@@ -128,17 +140,7 @@ google:
   maps:
     api-key: ${GOOGLE_MAPS_API_KEY:}
 
-# Email Configuration
-mail:
-  smtp:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:your-email@gmail.com}
-    password: ${MAIL_PASSWORD:your-password}
-    auth: true
-    starttls:
-      enable: true
-      required: true
+
 
 # SpringDoc OpenAPI Configuration
 springdoc:
