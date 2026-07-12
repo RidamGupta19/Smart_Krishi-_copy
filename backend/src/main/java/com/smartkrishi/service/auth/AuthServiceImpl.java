@@ -67,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Phone number already registered");
         }
 
-        // Create new user (inactive until OTP verified)
+        // Create new user (active immediately, no OTP required)
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
@@ -75,15 +75,9 @@ public class AuthServiceImpl implements AuthService {
         user.setLastName(request.getLastName());
         user.setProfileImage(request.getProfileImage());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setUserStatus(User.UserStatus.INACTIVE);
-        user.setEmailVerified(false);
+        user.setUserStatus(User.UserStatus.ACTIVE);
+        user.setEmailVerified(true);
         user.setAuthProvider("LOCAL");
-
-        // Generate 6 digit OTP
-        String otp = String.format("%06d", new Random().nextInt(1000000));
-        user.setOtpCode(otp);
-        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-        user.setOtpAttempts(0);
 
         // Assign roles
         var roles = new HashSet<Role>();
@@ -116,10 +110,7 @@ public class AuthServiceImpl implements AuthService {
             buyerProfileRepository.save(buyerProfile);
         }
 
-        // Send OTP email
-        sendVerificationEmail(savedUser.getEmail(), otp);
-
-        log.info("New user registered and verification email sent: {}", savedUser.getEmail());
+        log.info("New user registered and activated immediately: {}", savedUser.getEmail());
 
         return mapUserToResponse(savedUser);
     }
@@ -277,12 +268,11 @@ public class AuthServiceImpl implements AuthService {
             }
         }
 
-        // Generate JWT Access & Refresh Tokens
-        var roleNames = user.getRoles().stream()
-                .map(role -> role.getRoleType().toString())
-                .collect(Collectors.toList());
+        // Generate JWT Access & Refresh Tokens matching standard login
+        UserPrincipal userPrincipal = UserPrincipal.create(user);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
 
-        String token = tokenProvider.generateTokenFromEmail(user.getEmail(), user.getId(), roleNames);
+        String token = tokenProvider.generateToken(authentication);
         String refreshToken = tokenProvider.generateRefreshToken(user.getEmail());
 
         log.info("Google OAuth login successful for: {}", user.getEmail());
@@ -294,76 +284,6 @@ public class AuthServiceImpl implements AuthService {
                 tokenProvider.getExpirationTime(),
                 mapUserToResponse(user)
         );
-    }
-
-    @Override
-    public UserResponse verifyOtp(VerifyOtpRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (user.getEmailVerified() && user.getUserStatus() == User.UserStatus.ACTIVE) {
-            throw new BadRequestException("Account is already verified and active");
-        }
-
-        if (user.getOtpCode() == null || user.getOtpExpiry() == null) {
-            throw new BadRequestException("No active OTP found. Please request a new OTP code.");
-        }
-
-        if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("OTP has expired. Please request a new OTP.");
-        }
-
-        if (user.getOtpAttempts() >= 5) {
-            throw new BadRequestException("Maximum OTP attempts exceeded. Please request a new OTP.");
-        }
-
-        if (!user.getOtpCode().equals(request.getOtpCode())) {
-            user.setOtpAttempts(user.getOtpAttempts() + 1);
-            userRepository.save(user);
-            throw new BadRequestException("Invalid OTP code. Attempts remaining: " + (5 - user.getOtpAttempts()));
-        }
-
-        // Activation
-        user.setEmailVerified(true);
-        user.setUserStatus(User.UserStatus.ACTIVE);
-        user.setOtpCode(null);
-        user.setOtpExpiry(null);
-        user.setOtpAttempts(0);
-        User savedUser = userRepository.save(user);
-
-        log.info("Email verified successfully and user activated: {}", savedUser.getEmail());
-
-        return mapUserToResponse(savedUser);
-    }
-
-    @Override
-    public void resendOtp(ResendOtpRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (user.getEmailVerified() && user.getUserStatus() == User.UserStatus.ACTIVE) {
-            throw new BadRequestException("Account is already verified");
-        }
-
-        // Enforce 60 seconds cooldown
-        if (user.getOtpExpiry() != null) {
-            LocalDateTime sentAt = user.getOtpExpiry().minusMinutes(10);
-            if (LocalDateTime.now().isBefore(sentAt.plusSeconds(60))) {
-                long secondsLeft = Duration.between(LocalDateTime.now(), sentAt.plusSeconds(60)).getSeconds();
-                throw new BadRequestException("Please wait " + secondsLeft + " seconds before requesting a new OTP.");
-            }
-        }
-
-        // Generate new OTP
-        String otp = String.format("%06d", new Random().nextInt(1000000));
-        user.setOtpCode(otp);
-        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-        user.setOtpAttempts(0);
-        userRepository.save(user);
-
-        sendVerificationEmail(user.getEmail(), otp);
-
-        log.info("New OTP sent successfully to: {}", user.getEmail());
     }
 
     private GoogleTokenPayload validateGoogleToken(String idToken) {
@@ -385,17 +305,6 @@ public class AuthServiceImpl implements AuthService {
             log.error("Google ID Token validation failed", e);
             throw new BadRequestException("Google ID Token validation failed: " + e.getMessage());
         }
-    }
-
-    private void sendVerificationEmail(String toEmail, String otp) {
-        String subject = "Smart Krishi - Verification Code";
-        String content = "<h2>Welcome to Smart Krishi!</h2>"
-                + "<p>Thank you for registering with us. To activate your account, please verify your email address using the following 6-digit OTP:</p>"
-                + "<h3 style='background-color:#f4f4f4;padding:12px;display:inline-block;letter-spacing:5px;font-size:24px;border-radius:5px;color:#16a34a;'>" + otp + "</h3>"
-                + "<p>This code is valid for <strong>10 minutes</strong>. If you did not request this code, please ignore this email.</p>"
-                + "<br/><p>Grow Smart, Live Better!</p><p>Smart Krishi Team</p>";
-
-        emailService.sendEmail(toEmail, subject, content);
     }
 
     private UserResponse mapUserToResponse(User user) {

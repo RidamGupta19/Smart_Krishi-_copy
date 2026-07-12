@@ -111,7 +111,7 @@ public class AuthServiceImplTest {
         when(buyerProfileRepository.save(any(BuyerProfile.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(passwordEncoder.encode(anyString())).thenReturn("hashed-random-pwd");
         
-        when(tokenProvider.generateTokenFromEmail(eq(payload.getEmail()), eq(10L), anyList())).thenReturn("jwt-access-token");
+        when(tokenProvider.generateToken(any(Authentication.class))).thenReturn("jwt-access-token");
         when(tokenProvider.generateRefreshToken(eq(payload.getEmail()))).thenReturn("jwt-refresh-token");
         when(tokenProvider.getExpirationTime()).thenReturn(3600000L);
 
@@ -157,7 +157,7 @@ public class AuthServiceImplTest {
         when(buyerProfileRepository.save(any(BuyerProfile.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(passwordEncoder.encode(anyString())).thenReturn("hashed-random-pwd-2");
         
-        when(tokenProvider.generateTokenFromEmail(eq(payload.getEmail()), eq(11L), anyList())).thenReturn("jwt-access-token-2");
+        when(tokenProvider.generateToken(any(Authentication.class))).thenReturn("jwt-access-token-2");
         when(tokenProvider.generateRefreshToken(eq(payload.getEmail()))).thenReturn("jwt-refresh-token-2");
         when(tokenProvider.getExpirationTime()).thenReturn(3600000L);
 
@@ -242,7 +242,7 @@ public class AuthServiceImplTest {
         assertEquals("Alice", response.getFirstName());
         assertEquals("Smith", response.getLastName());
         assertEquals("newlocal@smartkrishi.com", response.getEmail());
-        
-        verify(emailService).sendEmail(eq("newlocal@smartkrishi.com"), anyString(), anyString());
+        assertEquals("ACTIVE", response.getUserStatus());
+        assertTrue(response.getEmailVerified());
     }
 }

@@ -4,7 +4,7 @@ export const faqData = [
     faqs: [
       {
         q: "How do I sign up as a buyer on Smart Krishi?",
-        a: "Click on the Account link in the navigation sidebar, select Register, choose the Buyer role, and fill in your name, email, phone number, and password. An OTP will be sent to your mobile phone to verify your registration."
+        a: "Click on the Account link in the navigation sidebar, select Register, choose the Buyer role, and fill in your name, email, phone number, and password. You can also sign up immediately using the Continue with Google option."
       },
       {
         q: "Can I change my account type from Buyer to Seller later?",
@@ -12,11 +12,7 @@ export const faqData = [
       },
       {
         q: "What information is required for buyer registration?",
-        a: "We only require basic details: First Name, Last Name, Email, Phone Number, and a secure password. We verify your phone number and email to ensure transaction security."
-      },
-      {
-        q: "Why am I not receiving the OTP during buyer registration?",
-        a: "Please check if your mobile network signal is strong. If you still don't receive it, ensure you didn't enter a leading zero or country code (the default is +91 for India). Click Resend OTP after 60 seconds."
+        a: "We only require basic details: First Name, Last Name, Email, Phone Number, and a secure password. We verify your details to ensure transaction security."
       }
     ]
   },
@@ -286,7 +282,7 @@ export const faqData = [
     faqs: [
       {
         q: "Why do I need to verify my phone number and email?",
-        a: "Verification ensures account security, protects against fraudulent listings, and enables us to send you order updates, OTP codes, and password reset links."
+        a: "Verification ensures account security, protects against fraudulent listings, and enables us to send you order updates and password reset links."
       }
     ]
   }

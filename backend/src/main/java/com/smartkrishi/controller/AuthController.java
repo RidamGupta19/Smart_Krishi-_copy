@@ -55,17 +55,4 @@ public class AuthController {
     public ResponseEntity<JwtResponse> googleLogin(@Valid @RequestBody GoogleLoginRequest request) {
         return new ResponseEntity<>(authService.googleLogin(request), HttpStatus.OK);
     }
-
-    @PostMapping("/verify-otp")
-    @Operation(summary = "Verify account email with 6-digit OTP")
-    public ResponseEntity<UserResponse> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
-        return new ResponseEntity<>(authService.verifyOtp(request), HttpStatus.OK);
-    }
-
-    @PostMapping("/resend-otp")
-    @Operation(summary = "Resend OTP verification email")
-    public ResponseEntity<Void> resendOtp(@Valid @RequestBody ResendOtpRequest request) {
-        authService.resendOtp(request);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

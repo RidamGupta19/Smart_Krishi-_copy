@@ -39,14 +39,6 @@ export default function Account() {
   const [profileImage, setProfileImage] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  // OTP Verification States
-  const [isOtpVerification, setIsOtpVerification] = useState(false);
-  const [otpCode, setOtpCode] = useState("");
-  const [otpEmail, setOtpEmail] = useState("");
-  const [timer, setTimer] = useState(60);
-  const [resendDisabled, setResendDisabled] = useState(true);
-  const [verificationSuccess, setVerificationSuccess] = useState(false);
-
   // Current logged in user state
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
@@ -60,22 +52,9 @@ export default function Account() {
     }
   }, [location.pathname]);
 
-  // OTP Countdown Timer
-  useEffect(() => {
-    let interval;
-    if (isOtpVerification && timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
-    } else if (timer === 0) {
-      setResendDisabled(false);
-    }
-    return () => clearInterval(interval);
-  }, [isOtpVerification, timer]);
-
   // Google Sign In GSI Script Loader
   useEffect(() => {
-    if (window.google && !user && !isOtpVerification) {
+    if (window.google && !user) {
       try {
         window.google.accounts.id.initialize({
           client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "902721223221-q5i46gi0vco3e3lfn3f2it0nps2qio5r.apps.googleusercontent.com",
@@ -95,7 +74,7 @@ export default function Account() {
         console.error("Failed to initialize Google Identity Services:", err);
       }
     }
-  }, [isLogin, user, isOtpVerification]);
+  }, [isLogin, user]);
 
   const handleGoogleLoginCallback = async (response) => {
     setLoading(true);
@@ -202,12 +181,11 @@ export default function Account() {
           profileImage
         });
 
-        // Registration successful: switch to OTP screen
-        setOtpEmail(email);
-        setIsOtpVerification(true);
-        setTimer(60);
-        setResendDisabled(true);
-        setSuccessMessage("Account created! Verification code sent to your email.");
+        // Registration successful: switch to Login screen
+        setSuccessMessage("Account created successfully! Please log in.");
+        setIsLogin(true);
+        setPassword("");
+        setConfirmPassword("");
       }
     } catch (err) {
       console.error(err);
@@ -226,47 +204,6 @@ export default function Account() {
       }
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-    setLoading(true);
-    try {
-      await api.post("/auth/verify-otp", { email: otpEmail, otpCode });
-      setVerificationSuccess(true);
-      setSuccessMessage("Verification successful! Please log in.");
-
-      // Auto transition to login screen after 2.5s
-      setTimeout(() => {
-        setIsOtpVerification(false);
-        setVerificationSuccess(false);
-        setIsLogin(true);
-        setOtpCode("");
-        // Pre-fill email for login
-        setEmail(otpEmail);
-        setPassword("");
-        setSuccessMessage("Email verified! Please log in with your credentials.");
-      }, 2500);
-    } catch (err) {
-      setErrorMessage(err.response?.data?.message || "Invalid or expired verification code.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResendOtp = async () => {
-    setErrorMessage("");
-    setSuccessMessage("");
-    try {
-      await api.post("/auth/resend-otp", { email: otpEmail });
-      setSuccessMessage("A new verification code has been sent!");
-      setTimer(60);
-      setResendDisabled(true);
-    } catch (err) {
-      setErrorMessage(err.response?.data?.message || "Failed to resend code. Please try again.");
     }
   };
 
@@ -413,106 +350,7 @@ export default function Account() {
     );
   }
 
-  // OTP Verification view
-  if (isOtpVerification) {
-    return (
-      <div className="min-h-screen bg-gradient-to-r from-green-50 to-green-100 flex items-center justify-center px-4 py-12 animate-fadeIn font-outfit">
-        <div className="w-full max-w-md bg-white rounded-[32px] shadow-xl p-8 border border-green-200 text-center">
-          {verificationSuccess ? (
-            <div className="space-y-4 animate-scaleUp py-6">
-              <div className="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-                <CheckCircle2 size={44} />
-              </div>
-              <h2 className="text-3xl font-extrabold text-green-950">Verified!</h2>
-              <p className="text-gray-500 text-sm">Your email address has been successfully verified.</p>
-              <div className="w-6 h-6 border-4 border-green-600 border-t-transparent rounded-full animate-spin mx-auto mt-6"></div>
-              <p className="text-xs text-green-700 font-bold">Redirecting you to login...</p>
-            </div>
-          ) : (
-            <>
-              <div className="w-16 h-16 bg-green-50 text-green-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                <KeyRound size={32} />
-              </div>
 
-              <h2 className="text-3xl font-extrabold text-green-950 mb-2">Enter Verification Code</h2>
-              <p className="text-gray-500 text-xs leading-relaxed mb-6">
-                We've sent a 6-digit OTP code to <strong className="text-gray-700">{otpEmail}</strong>.<br />
-                Please enter it below to activate your account.
-              </p>
-
-              {successMessage && (
-                <div className="bg-green-50 text-green-800 p-4 rounded-xl border border-green-200 mb-4 text-xs font-semibold">
-                  {successMessage}
-                </div>
-              )}
-
-              {errorMessage && (
-                <div className="bg-red-50 text-red-800 p-4 rounded-xl border border-red-200 mb-4 text-xs font-semibold">
-                  {errorMessage}
-                </div>
-              )}
-
-              <form onSubmit={handleVerifyOtp} className="space-y-6">
-                <input
-                  type="text"
-                  maxLength={6}
-                  placeholder="000000"
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                  className="w-full tracking-[1.5em] text-center font-extrabold text-2xl border border-gray-300 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:tracking-normal placeholder:text-gray-300"
-                  required
-                />
-
-                <button
-                  type="submit"
-                  disabled={loading || otpCode.length < 6}
-                  className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white py-4 rounded-xl font-bold shadow-md transition text-lg flex items-center justify-center cursor-pointer border-0 outline-none"
-                >
-                  {loading ? (
-                    <RefreshCw className="animate-spin" size={20} />
-                  ) : (
-                    "Verify Account"
-                  )}
-                </button>
-              </form>
-
-              <div className="mt-8 flex flex-col items-center gap-3">
-                <div className="text-xs font-bold text-gray-400">
-                  {timer > 0 ? (
-                    <span>Resend code in <strong className="text-green-600 font-extrabold">{timer}s</strong></span>
-                  ) : (
-                    <span>Didn't receive the email?</span>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleResendOtp}
-                  disabled={resendDisabled}
-                  className="text-green-700 hover:text-green-800 disabled:text-gray-300 disabled:no-underline font-extrabold text-sm hover:underline cursor-pointer bg-transparent border-0 outline-none"
-                >
-                  Resend OTP Code
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsOtpVerification(false);
-                    setIsLogin(false);
-                    setErrorMessage("");
-                    setSuccessMessage("");
-                  }}
-                  className="mt-2 text-gray-400 hover:text-gray-600 text-xs font-semibold cursor-pointer bg-transparent border-0 outline-none"
-                >
-                  Back to Registration
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    );
-  }
 
   // Login / Register Form View
   return (

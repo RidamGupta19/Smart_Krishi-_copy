@@ -76,15 +76,6 @@ public class User {
     @Column(name = "google_picture", length = 1000)
     private String googlePicture;
 
-    @Column(name = "otp_code")
-    private String otpCode;
-
-    @Column(name = "otp_expiry")
-    private LocalDateTime otpExpiry;
-
-    @Column(name = "otp_attempts")
-    private Integer otpAttempts = 0;
-
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
 
